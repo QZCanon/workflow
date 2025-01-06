@@ -173,7 +173,20 @@ static inline int __poller_add_fd(int fd, int event, void *data,
 {
 	struct kevent ev;
 	EV_SET(&ev, fd, event, EV_ADD, 0, 0, data);
-	return kevent(poller->pfd, &ev, 1, NULL, 0, NULL);
+
+    /*
+    int     kevent(int kq,
+                   const struct kevent *changelist, int nchanges,
+                   struct kevent *eventlist, int nevents,
+                   const struct timespec *timeout);
+    */
+    // kevent中的第一个参数是要注册的kqueue，
+    // changelist是要监视的事件列表，
+    // nchanges表示要监听事件的长度，
+    // eventlist是kevent返回的事件列表,
+    // nevents表示要返回事件列表的长度，
+    // 最后一个参数是timeout。
+	return kevent(poller->pfd, &ev, 1, NULL, 0, NULL); // 将 ev 添加到 poller 的事件表中
 }
 
 static inline int __poller_del_fd(int fd, int event, poller_t *poller)
@@ -195,7 +208,7 @@ static inline int __poller_mod_fd(int fd, int old_event,
 
 static inline int __poller_create_timerfd()
 {
-	return dup(0);
+	return dup(0); // 返回一个新的文件描述符
 }
 
 static inline int __poller_add_timerfd(int fd, poller_t *poller)
@@ -1035,7 +1048,7 @@ static int __poller_open_pipe(poller_t *poller)
 {
 	int pipefd[2];
 
-	if (pipe(pipefd) >= 0)
+	if (pipe(pipefd) >= 0)  // 创建管道
 	{
 		if (__poller_add_fd(pipefd[0], EPOLLIN, (void *)1, poller) >= 0)
 		{

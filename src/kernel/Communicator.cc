@@ -1412,10 +1412,10 @@ int Communicator::create_poller(size_t poller_threads)
 	if (this->msgqueue)
 	{
 		params.context = this->msgqueue;
-		this->mpoller = mpoller_create(&params, poller_threads);
+		this->mpoller = mpoller_create(&params, poller_threads); // 创建poller
 		if (this->mpoller)
 		{
-			if (mpoller_start(this->mpoller) >= 0)
+			if (mpoller_start(this->mpoller) >= 0) // 启动poller
 				return 0;
 
 			mpoller_destroy(this->mpoller);
