@@ -68,7 +68,7 @@ else ()
 endif ()
 
 foreach(src ${TEST_LIST})
-	add_executable(${src} EXCLUDE_FROM_ALL ${src}.cc)
+	add_executable(${src} ${src}.cc)
 	target_link_libraries(${src} ${WORKFLOW_LIB} GTest::GTest GTest::Main)
 	add_test(${src} ${src})
 	add_dependencies(check ${src})
